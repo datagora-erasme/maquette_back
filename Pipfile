@@ -1,0 +1,38 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+flake8 = "*"
+autopep8 = "*"
+
+[packages]
+flask = "*"
+python-dotenv = "*"
+psycopg2-binary = "*"
+flask-cors = "*"
+flask-jwt-extended = "*"
+webargs = "*"
+mysql-connector-python = "*"
+sqlalchemy = "==1.4.46"
+connexion = "*"
+setuptools = "*"
+pytest = "*"
+requests = "*"
+flask-sqlalchemy = "==3.0"
+flask-marshmallow = "*"
+marshmallow-sqlalchemy = "*"
+flask-swagger = "*"
+flask-swagger-ui = "*"
+pdfkit = "*"
+bleach = "*"
+loguru = "*"
+urllib3 = "*"
+str2bool = "*"
+pdfkit = "==0.6.1"
+pandas= "==2.0.0"
+pytest-order = "==1.1.0"
+
+[requires]
+python_version = "3.8"
