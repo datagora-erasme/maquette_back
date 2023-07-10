@@ -16,9 +16,9 @@ This repository contains the backend code that enables and allows the platform's
 
 This code will : 
 * Receive the 3D Objects
-* Visualize and fix it
+* Visualize and fix it ( in case of corrupted layers)
 * Voxelize it 
-* Generate the Heightmap into CSV Files  
+* Generate the Heightmap into multiple CSV Files  
 * ...
 
 # How to deploy 
@@ -30,13 +30,22 @@ This code will :
 `
 git clone https://github.com/datagora-erasme/maquette_back.git
 `
-* Switching to the branche **develop**
-`
-git checkout develop
-`
-* Change variables on the .env file (taking the .env.EXAMPLE as an example)
+
+* Change variables on the .env file (taking the *.env.EXAMPLE* as an example)
 
 * Start the API 
 `
 python run.py
 `
+# Use-case Specification 
+## Voxelization :
+
+We tried to make and render the voxelization fully in python, using the Pyvista python module but the received data we are using wasn't that clean and easy to handle!
+
+So, we prefered using another oriented/specific and straight-forward tool for voxelization called **binvox** that reads a 3D model file, rasterizes it into a binary 3D voxel grid, and writes the resulting voxel file.
+
+## Heightmap :
+
+This one was kind of tricky ! using the old method used before in **Legonizer** wasn't possible, so started by generating a heatmap of the voxelized result we are having and than use that heatmap to calculate the relation between height/Eleveation and the heat... 
+
+And that's how we bypassed and got the heightmap of each center-cell of a voxel (cube), which will give us the height of each *building* to generate the CSV.

@@ -7,7 +7,7 @@ import base64
 import binascii
 import pyvista as pv
 import numpy as np
-import pymeshfix
+from sys import platform
 
 # Utils import
 from app.utils.methods import *
@@ -18,11 +18,15 @@ dataprocess = Blueprint("dataprocess", __name__)
 logger = LocalProxy(lambda: current_app.logger)
 
 
-def isBase64(s):
-    try:
-        return base64.b64encode(base64.b64decode(s)) == s
-    except Exception:
-        return jsonify({"msg": "Data isn't Base64"}), 500
+def voxelize(tempfile):
+    """
+    func: to use binvox for voxelization.
+        @tempfile: the temp file created from the received data.
+    """
+    if platform == "linux" or platform == "linux2":
+        os.system("binvox -c -d 200 -t msh " + tempfile)
+    elif platform == "win32":
+        os.system("binvox.exe -c -d 200 -t msh " + tempfile)
 
 
 @dataprocess.before_request
@@ -60,7 +64,9 @@ def meshrecieve():
         description: Internal Server Error
     """
     infoLogger.info(f"{request.method} → {request.path}")
+
     form = request.json
+
     if form["data"]:
         base64toDecode = form["data"]
         try:
@@ -68,30 +74,39 @@ def meshrecieve():
         except binascii.Error:
             errorLogger.error(request.path + " error ")
             return jsonify({"msg": "This isn't a Base64"}), 400
+
+        # Checking if the received base64 data is real and not corrupted
         decoded = base64.b64decode(base64toDecode).decode("utf-8")
         encoded = base64.b64encode(bytes(decoded, encoding="utf-8"))
+
         if base64toDecode == str(encoded, encoding="utf-8"):
-            new_file = open("tempstl.stl", "w")
+            # Adding the data to a temp file
+            new_file = open("tempstl.obj", "w")
             new_file.write(decoded)
             new_file.close()
 
+            # Voxelizing the tempfile that contains the mesh to voxelize
+            voxelize("tempstl.obj")
+            os.remove("tempstl.obj")
+
             p = pv.Plotter()
 
-            mesh_tofix = pv.read("tempstl.stl")
-            mesh = mesh_tofix.fill_holes(1000, inplace=True)
+            themesh = pv.read("tempstl.msh")
 
-            fixer = pymeshfix.MeshFix(mesh)
+            p.add_mesh(themesh, color=True, show_edges=True, opacity=1)
 
-            voxels = pv.voxelize(
-                fixer.mesh.triangulate(),
-                density=fixer.mesh.length / 180,
-                check_surface=False,
-            ).connectivity()
-            p.add_mesh(voxels, color=True, show_edges=True, opacity=1)
+            # If we want to enable the anti aliasing
+            # p.enable_anti_aliasing("ssaa")
 
-            p.enable_anti_aliasing("ssaa")
+            # If we want to preview the result
+            # p.show()
+
+            # Using Pyvista to export the voxelized version of the mesh
             p.export_obj("voxeled.obj")
-            os.remove("tempstl.stl")
+
+            os.remove("tempstl.msh")
+
+            # Sending the voxelized mesh version to the front for rendering and visualisation
             with open("voxeled.obj", "r") as file:
                 data = file.read()
                 coded = base64.b64encode(bytes(data, encoding="utf-8"))
