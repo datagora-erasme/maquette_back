@@ -13,6 +13,16 @@ from sys import platform
 from app.utils.methods import *
 from app.utils.constants import *
 
+# WFS imports
+
+import geopandas as gpd
+from requests import Request
+from owslib.wfs import WebFeatureService
+from shapely.geometry import box
+import pyvista as pv
+import trimesh
+
+
 # Create Blueprint & get logger
 dataprocess = Blueprint("dataprocess", __name__)
 logger = LocalProxy(lambda: current_app.logger)
@@ -34,10 +44,10 @@ def before_request_func():
     current_app.logger.name = "dataprocess"
 
 
-@dataprocess.route("/mesh", methods=["POST"])
+@dataprocess.route("/bbox", methods=["POST"])
 def meshrecieve():
     """
-    Recieving Mesh File
+    Recieving BoundingBox
     ---
     tags:
       - Data Processing
@@ -48,12 +58,15 @@ def meshrecieve():
         name: body
         schema:
           properties:
-            data:
+            bbox:
               type: string
-              description: email of the user account
+              description: the used bbox
+            ratio:
+              type: string
+              description: the used ratio
     responses:
       200:
-        description: Base64 Data Received Successfully
+        description: Data Received Successfully
       400:
         description: Bad Request
       403:
@@ -66,54 +79,85 @@ def meshrecieve():
     infoLogger.info(f"{request.method} → {request.path}")
 
     form = request.json
+    p = pv.Plotter()
+    url = "https://geoserver-planta.exo-dev.fr/geoserver/Metropole/ows?"
 
-    if form["data"]:
-        base64toDecode = form["data"]
-        try:
-            base64.b64decode(base64toDecode)
-        except binascii.Error:
-            errorLogger.error(request.path + " error ")
-            return jsonify({"msg": "This isn't a Base64"}), 400
+    wfs = WebFeatureService(url=url)
 
-        # Checking if the received base64 data is real and not corrupted
-        decoded = base64.b64decode(base64toDecode).decode("utf-8")
-        encoded = base64.b64encode(bytes(decoded, encoding="utf-8"))
+    layer_name = "Metropole:bati"
 
-        if base64toDecode == str(encoded, encoding="utf-8"):
-            # Adding the data to a temp file
-            new_file = open("tempstl.obj", "w")
-            new_file.write(decoded)
-            new_file.close()
+    if form["bbox"]:
+        params = dict(
+            service="WFS",
+            version="1.0.0",
+            request="GetFeature",
+            typeName=layer_name,
+            outputFormat="json",
+            srsName="EPSG:2154",
+            bbox=form["bbox"],
+            startIndex=0,
+        )
 
-            # Voxelizing the tempfile that contains the mesh to voxelize
-            voxelize("tempstl.obj")
-            os.remove("tempstl.obj")
+        wfs_request_url = Request("GET", url, params=params).prepare().url
 
-            p = pv.Plotter()
+        data = gpd.read_file(wfs_request_url)
 
-            themesh = pv.read("tempstl.msh")
+        splited = form["bbox"].split(",")
 
-            p.add_mesh(themesh, color=True, show_edges=True, opacity=1)
+        mask = box(splited[0], splited[1], splited[2], splited[3])
+        gdfclip = data.clip(mask, keep_geom_type=True)
+        info = []
+        for index, row in gdfclip.iterrows():
+            if row["geometry"].geom_type == "Polygon":
+                zt = {
+                    "strid": row["strid"],
+                    "geometry": row["geometry"],
+                    "hauteur": row["hauteur"],
+                }
+                info.append(zt)
+            elif row["geometry"].geom_type == "MultiPolygon":
+                for j in row["geometry"].geoms:
+                    zt = {
+                        "strid": row["strid"],
+                        "geometry": j,
+                        "hauteur": row["hauteur"],
+                    }
+                    info.append(zt)
 
-            # If we want to enable the anti aliasing
-            # p.enable_anti_aliasing("ssaa")
+        for i in info:
+            if i["hauteur"]:
+                m = trimesh.creation.extrude_polygon(i["geometry"], height=i["hauteur"])
+                p.add_mesh(m, color="lightblue", opacity=1)
 
-            # If we want to preview the result
-            # p.show()
+        p.export_obj("scene.obj")
+        # Voxelizing the tempfile that contains the mesh to voxelize
+        voxelize("scene.obj")
+        os.remove("scene.obj")
+        os.remove("scene.mtl")
 
-            # Using Pyvista to export the voxelized version of the mesh
-            p.export_obj("voxeled.obj")
+        themesh = pv.read("scene.msh")
 
-            os.remove("tempstl.msh")
+        p.add_mesh(themesh, color=True, show_edges=True, opacity=1)
 
-            # Sending the voxelized mesh version to the front for rendering and visualisation
-            with open("voxeled.obj", "r") as file:
-                data = file.read()
-                coded = base64.b64encode(bytes(data, encoding="utf-8"))
-                file.close()
-                os.remove("voxeled.obj")
-                os.remove("voxeled.mtl")
-            return jsonify({"data": str(coded, encoding="utf-8")}), 200
+        # If we want to enable the anti aliasing
+        # p.enable_anti_aliasing("ssaa")
+
+        # If we want to preview the result
+        # p.show()
+
+        # Using Pyvista to export the voxelized version of the mesh
+        p.export_obj("voxeled.obj")
+
+        os.remove("scene.msh")
+
+        # Sending the voxelized mesh version to the front for rendering and visualisation
+        with open("voxeled.obj", "r") as file:
+            filedata = file.read()
+            coded = base64.b64encode(bytes(filedata, encoding="utf-8"))
+            file.close()
+            os.remove("voxeled.obj")
+            os.remove("voxeled.mtl")
+        return jsonify({"data": str(coded, encoding="utf-8")}), 200
     else:
         errorLogger.error(request.path + " error ")
         return jsonify({"msg": "Data is empty"}), 400
