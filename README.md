@@ -11,14 +11,15 @@
 ```
 
 # About this repository 
+> :warning: This version is using the tiles hosted on Exo-Dev's server :warning:
 
 This repository contains the backend code that enables and allows the platform's users to visualize, data processing and building the results on the front side.
 
 This code will : 
-* Receive the 3D Objects
-* Visualize and fix it ( in case of corrupted layers)
-* Voxelize it 
-* Generate the Heightmap into multiple CSV Files  
+* Receive the Bbox of the selected zone
+* Get the meshes from the WFS stream, merge it and clip it.
+* Voxelize the meshes 
+* Generate the Heightmap into multiple CSV Files ( Coming...) 
 * ...
 
 # How to deploy 
