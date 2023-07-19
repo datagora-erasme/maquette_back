@@ -56,3 +56,18 @@ So, we prefered using another oriented/specific and straight-forward tool for vo
 This one was kind of tricky ! using the old method used before in **Legonizer** wasn't possible, so started by generating a heatmap of the voxelized result we are having and than use that heatmap to calculate the relation between height/Eleveation and the heat... 
 
 And that's how we bypassed and got the heightmap of each center-cell of a voxel (cube), which will give us the height of each *building* to generate the CSV.
+
+# Example 
+In this example we will use a part of Lyon 3 (around *tour Part-Dieu*) and the Bbox [843845.1134647338, 6519404.7046337575, 844253.0381356651, 6519813.770257493]
+
+## Rendering
+
+![Rendering](https://i.imgur.com/mE7CjVx.png)
+
+## Voxelization
+
+![Voxelization](https://i.imgur.com/WvmBza7.png)
+
+## Heatmap (to get the heightmap)
+
+![Heatmap](https://i.imgur.com/7ioPvas.png)
