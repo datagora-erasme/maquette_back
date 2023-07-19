@@ -117,10 +117,11 @@ def meshrecieve():
                 info.append(zt)
             elif row["geometry"].geom_type == "MultiPolygon":
                 for j in row["geometry"].geoms:
+                    selected = gdfclip[gdfclip["strid"] == row["strid"]]
                     zt = {
                         "strid": row["strid"],
                         "geometry": j,
-                        "hauteur": row["hauteur"],
+                        "hauteur": selected.hauteur[index],
                     }
                     info.append(zt)
 
@@ -155,7 +156,7 @@ def meshrecieve():
             filedata = file.read()
             coded = base64.b64encode(bytes(filedata, encoding="utf-8"))
             file.close()
-            os.remove("voxeled.obj")
+            # os.remove("voxeled.obj")
             os.remove("voxeled.mtl")
         return jsonify({"data": str(coded, encoding="utf-8")}), 200
     else:

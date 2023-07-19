@@ -34,6 +34,12 @@ git clone https://github.com/datagora-erasme/maquette_back.git
 
 * Change variables on the .env file (taking the *.env.EXAMPLE* as an example)
 
+* Install Python PIP requirements :
+
+```
+pip install -r requirements.txt
+```
+
 * Start the API 
 `
 python run.py
