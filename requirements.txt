@@ -59,3 +59,4 @@ geopandas==0.13.2
 owslib==0.29.2
 trimesh==3.22.3
 pandas==2.0.0
+shapely==2.0.1
