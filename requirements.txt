@@ -54,3 +54,8 @@ pyhtml2pdf==0.0.6
 pyvista==0.39.1
 numpy==1.24.2
 pymeshfix==0.16.2
+nltk==3.8.1
+geopandas==0.13.2
+owslib==0.29.2
+trimesh==3.22.3
+pandas==2.0.0
