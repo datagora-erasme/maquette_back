@@ -58,7 +58,7 @@ This one was kind of tricky ! using the old method used before in **Legonizer** 
 And that's how we bypassed and got the heightmap of each center-cell of a voxel (cube), which will give us the height of each *building* to generate the CSV.
 
 # Example 
-In this example we will use a part of Lyon 3 (around *tour Part-Dieu*) and the Bbox [843845.1134647338, 6519404.7046337575, 844253.0381356651, 6519813.770257493]
+In this example we will use a part of Lyon 3 (around *tour Part-Dieu*) and the Bbox [**843845.1134647338, 6519404.7046337575, 844253.0381356651, 6519813.770257493**]
 
 ## Rendering
 
