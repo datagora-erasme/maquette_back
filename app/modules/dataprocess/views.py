@@ -34,9 +34,9 @@ def voxelize(tempfile):
         @tempfile: the temp file created from the received data.
     """
     if platform == "linux" or platform == "linux2":
-        os.system("binvox -c -d 200 -t msh " + tempfile)
+        os.system("binvox -c -e -d 200 -t msh " + tempfile)
     elif platform == "win32":
-        os.system("binvox.exe -c -d 200 -t msh " + tempfile)
+        os.system("binvox.exe -c -e -d 200 -t msh " + tempfile)
 
 
 @dataprocess.before_request
@@ -45,7 +45,7 @@ def before_request_func():
 
 
 @dataprocess.route("/bbox", methods=["POST"])
-def meshrecieve():
+def bboxreceive():
     """
     Recieving BoundingBox
     ---
