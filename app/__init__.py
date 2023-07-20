@@ -82,31 +82,23 @@ swaggerui_bp = get_swaggerui_blueprint(
 )
 
 # Import Modules (only here)
-# Import views from core folder / views.py
+
 from .core.views import core as core_bp
 from .docs.views import docs as docs_bp
-
-# Import others views.py modules
 from .modules.authentications.views import authentications as authentications_bp
 from .modules.users.views import users as users_bp
-from .modules.documents.views import documents as documents_bp
 
 from .modules.notifications.views import notifs as notifs_bp
-from .modules.customers.views import customers as customers_bp
-from .modules.contacts.views import contacts as contacts_bp
-from .modules.contacts.customers import customers_contacts as customers_contacts_bp
 from .modules.dataprocess.views import dataprocess as dataprocess_bp
 
 # Add BP to app routes
-app.register_blueprint(core_bp, url_prefix="/api/core")
 app.register_blueprint(swaggerui_bp, url_prefix="/api/docs")
+
+app.register_blueprint(core_bp, url_prefix="/api/core")
 app.register_blueprint(docs_bp, url_prefix="/api/docs")
 app.register_blueprint(authentications_bp, url_prefix="/api/auth")
 app.register_blueprint(users_bp, url_prefix="/api/users")
-app.register_blueprint(documents_bp, url_prefix="/api/documents")
+
 
 app.register_blueprint(notifs_bp, url_prefix="/api/notifications")
-app.register_blueprint(customers_bp, url_prefix="/api/customers")
-app.register_blueprint(contacts_bp, url_prefix="/api/contacts")
-app.register_blueprint(customers_contacts_bp, url_prefix="/api/contacts")
 app.register_blueprint(dataprocess_bp, url_prefix="/api/dataprocess")
