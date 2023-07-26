@@ -16,11 +16,6 @@ ALTER TYPE base.roles_auth OWNER TO adm;
 CREATE TYPE base.status_auth AS ENUM ('INACTIVE', 'ACTIVE', 'BANNED', 'PENDING');
 ALTER TYPE base.status_auth OWNER TO adm;
 
-
-CREATE TYPE base.notif_type AS ENUM ('ALERT', 'WARNING', 'INFO', 'SUCCESS');
-ALTER TYPE base.notif_type OWNER TO adm;
-
-
 CREATE TYPE base.img_type AS ENUM ('png', 'gif', 'jpg', 'jpeg');
 ALTER TYPE base.img_type OWNER TO adm;
 
@@ -29,13 +24,6 @@ ALTER TYPE base.img_type OWNER TO adm;
 -- ##################################################################
 
 
-CREATE TABLE base.avatars (
-	id serial PRIMARY KEY,
-	type base.img_type NOT NULL,
-  file_name character varying(100) NOT NULL,
-  data text NOT NULL
-);
-ALTER TABLE base.avatars OWNER TO adm;
 
 CREATE TABLE base.authentications (
 	id serial PRIMARY KEY,
@@ -55,10 +43,6 @@ CREATE TABLE base.users (
 	phone character varying(100) NULL,
 	avatar_id INT,
 	authentication_id INT,
-	FOREIGN KEY (avatar_id)
-		REFERENCES base.avatars (id) MATCH SIMPLE
-		ON UPDATE NO ACTION
-		ON DELETE NO ACTION,
 	FOREIGN KEY (authentication_id)
 		REFERENCES base.authentications (id) MATCH SIMPLE
 		ON UPDATE NO ACTION
@@ -66,34 +50,37 @@ CREATE TABLE base.users (
 );
 ALTER TABLE base.users OWNER TO adm;
 
-CREATE TABLE base.notifications (
+
+CREATE TABLE base.projects (
 	id serial PRIMARY KEY,
 	date_create timestamp without time zone NOT NULL DEFAULT now(),
-	title character varying(255) NOT NULL,
-	type base.type_notif NOT NULL,
-	content character varying(255) NOT NULL,
-	link character varying(255) NULL DEFAULT NULL,
+	name character varying(100) NOT NULL,
+	bbox character varying(100) NOT NULL,
+	nb_plaques_h INT NOT NULL ,
+	nb_plaques_v INT NOT NULL ,
+	ratio INT NOT NULL,
 	user_id INTEGER NULL,
 	FOREIGN KEY (user_id)
 		REFERENCES base.users (id) MATCH SIMPLE
 		ON UPDATE NO ACTION
 		ON DELETE NO ACTION
 );
-ALTER TABLE base.notifications OWNER TO adm;
+ALTER TABLE base.projects OWNER TO adm;
 
-
-CREATE TABLE base.notifications_users (
+CREATE TABLE base.datas (
 	id serial PRIMARY KEY,
-	is_viewed BOOLEAN NULL DEFAULT false,
-	user_id INT NOT NULL,
-	FOREIGN KEY (user_id)
-		REFERENCES base.users (id) MATCH SIMPLE
+	name character varying(100) NOT NULL,
+	service character varying(100) NULL,
+	url character varying(100) NULL,
+	layername character varying(100) NULL,
+	srsname character varying(100) NULL,
+	style character varying(100) NULL,
+	version character varying(100) NULL,
+	only_url BOOLEAN NULL DEFAULT false,
+	project_id INTEGER NULL,
+	FOREIGN KEY (project_id)
+		REFERENCES base.projects (id) MATCH SIMPLE
 		ON UPDATE NO ACTION
-		ON DELETE NO ACTION,
-	notification_id INT NOT NULL,
-	FOREIGN KEY (notification_id)
-		REFERENCES base.notifications (id) MATCH SIMPLE
-		ON UPDATE NO ACTION
-		ON DELETE CASCADE
+		ON DELETE NO ACTION
 );
-ALTER TABLE base.notifications_users OWNER TO adm;
+ALTER TABLE base.datas OWNER TO adm;
