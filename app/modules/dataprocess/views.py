@@ -8,6 +8,8 @@ import binascii
 import pyvista as pv
 import numpy as np
 from sys import platform
+import random
+import string
 
 # Utils import
 from app.utils.methods import *
@@ -22,6 +24,8 @@ from shapely.geometry import box
 import pyvista as pv
 import trimesh
 
+debug_mode = environ.get("DEBUG_MODE")
+
 
 # Create Blueprint & get logger
 dataprocess = Blueprint("dataprocess", __name__)
@@ -31,7 +35,7 @@ logger = LocalProxy(lambda: current_app.logger)
 def voxelize(tempfile):
     """
     func: to use binvox for voxelization.
-        @tempfile: the temp file created from the received data.
+        @tempfile: the temp file created from the received Bbox.
     """
     if platform == "linux" or platform == "linux2":
         os.system("binvox -c -e -d 200 -t msh " + tempfile)
@@ -129,14 +133,15 @@ def bboxreceive():
             if i["hauteur"]:
                 m = trimesh.creation.extrude_polygon(i["geometry"], height=i["hauteur"])
                 p.add_mesh(m, color="lightblue", opacity=1)
-
-        p.export_obj("scene.obj")
+        saved_scene = ''.join(random.choices(string.ascii_lowercase, k=10))
+        p.export_obj(saved_scene+".obj")
         # Voxelizing the tempfile that contains the mesh to voxelize
-        voxelize("scene.obj")
-        os.remove("scene.obj")
-        os.remove("scene.mtl")
+        voxelize(saved_scene+".obj")
+        if debug_mode == 'False':
+          os.remove(saved_scene+".obj")
+          os.remove(saved_scene+".mtl")
 
-        themesh = pv.read("scene.msh")
+        themesh = pv.read(saved_scene+".msh")
 
         p.add_mesh(themesh, color=True, show_edges=True, opacity=1)
 
@@ -147,17 +152,18 @@ def bboxreceive():
         # p.show()
 
         # Using Pyvista to export the voxelized version of the mesh
-        p.export_obj("voxeled.obj")
-
-        os.remove("scene.msh")
-
+        p.export_obj(saved_scene+"_voxeled.obj")
+        if debug_mode == 'False':
+              os.remove(saved_scene+".msh")
+      
         # Sending the voxelized mesh version to the front for rendering and visualisation
-        with open("voxeled.obj", "r") as file:
+        with open(saved_scene+"_voxeled.obj", "r") as file:
             filedata = file.read()
             coded = base64.b64encode(bytes(filedata, encoding="utf-8"))
             file.close()
-            # os.remove("voxeled.obj")
-            os.remove("voxeled.mtl")
+            if debug_mode == 'False':
+              os.remove(saved_scene+"_voxeled.obj")
+            os.remove(saved_scene+"_voxeled.mtl")
         return jsonify({"data": str(coded, encoding="utf-8")}), 200
     else:
         errorLogger.error(request.path + " error ")
