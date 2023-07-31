@@ -2,7 +2,7 @@
     <img src="https://upload.wikimedia.org/wikipedia/fr/thumb/b/b8/Logo_M%C3%A9tropole_Lyon_-_2022.svg/1200px-Logo_M%C3%A9tropole_Lyon_-_2022.svg.png" width="250">
     <img src="https://upload.wikimedia.org/wikipedia/fr/7/77/Logo_Universit%C3%A9_de_Lyon.png" width="250">
     <img src="https://images.exo-dev.fr/Logo_DatAgora.png" width="100">
-    <img src="https://images.exo-dev.fr/dark_blue_creation_exo_dev.png" width="150">
+    <img src="https://images.exo-dev.fr/white_creation_exo_dev.png" width="150">
 </p>
 
 # About This Project
@@ -45,6 +45,13 @@ This code will :
 
 > The */**sql*** folder already contains the sql scripts to execute for creating and filling the database's tables.
 
+## Set Up a PostgreSQL Database 
+
+* Setup a PostgreSQL Server depending on the OS you're using.
+* Execute the sql scripts available at the */**sql*** folder ( *create-tables.sql* & *insert-tables.sql* )
+
+## Run the app
+
 * Clone the repository 
 `
 git clone https://github.com/datagora-erasme/maquette_back.git
@@ -71,7 +78,7 @@ We tried to make and render the voxelization fully in python, using the Pyvista 
 So, we prefered using another oriented/specific and straight-forward tool for voxelization called **binvox** that reads a 3D model file, rasterizes it into a binary 3D voxel grid, and writes the resulting voxel file.
 
 # Example 
-In this example we will use a part of Lyon 3 (around *tour Part-Dieu*) and the Bbox [**843845.1134647338, 6519404.7046337575, 844253.0381356651, 6519813.770257493**]
+In this example we will use a part of Lyon 3 (around *tour Part-Dieu*) and the Bbox [**843845.1134647338, 6519404.7046337575, 844253.0381356651, 6519813.770257493**] using the **/api/dataprocess** endpoint.
 
 ## Rendering
 
