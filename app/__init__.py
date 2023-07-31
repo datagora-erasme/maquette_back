@@ -88,7 +88,9 @@ from .docs.views import docs as docs_bp
 from .modules.authentications.views import authentications as authentications_bp
 from .modules.users.views import users as users_bp
 
-from .modules.notifications.views import notifs as notifs_bp
+from .modules.projects.views import projects as projects_bp
+from .modules.datas.views import datas as datas_bp
+
 from .modules.dataprocess.views import dataprocess as dataprocess_bp
 
 # Add BP to app routes
@@ -100,5 +102,6 @@ app.register_blueprint(authentications_bp, url_prefix="/api/auth")
 app.register_blueprint(users_bp, url_prefix="/api/users")
 
 
-app.register_blueprint(notifs_bp, url_prefix="/api/notifications")
+app.register_blueprint(projects_bp, url_prefix="/api/projects")
+app.register_blueprint(datas_bp, url_prefix="/api/datas")
 app.register_blueprint(dataprocess_bp, url_prefix="/api/dataprocess")

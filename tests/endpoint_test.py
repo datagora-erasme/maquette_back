@@ -514,6 +514,5 @@ class BoilerplateTest(unittest.TestCase):
         r = self.app.delete("/api/contacts/" + str(newcontact), headers=header)
         self.assertEqual(r.status_code, 200)
 
-
 if __name__ == "__main__":
     unittest.main()

@@ -1,7 +1,7 @@
 from app.utils.constants import *
 from app.utils.methods import *
 from app import db, infoLogger, errorLogger
-from app.models import Users, Authentications, Documents
+from app.models import Users, Authentications
 from app.schemas import UserSchema, UserAdminSchema, UserListSchema
 from os import environ
 from os.path import basename
@@ -299,19 +299,6 @@ def create():
             auth = Authentications.query.get(form["authentication_id"])
 
             if auth:
-                if form["avatar"]:
-                    newDocument = Documents(
-                        date_create=datetime.datetime.utcnow(),
-                        type="image",
-                        title="Avatar " + form["firstname"] + " " + form["lastname"],
-                        file_name="avatar_"
-                        + form["firstname"]
-                        + "_"
-                        + form["lastname"],
-                        data=form["avatar"],
-                    )
-                    db.session.add(newDocument)
-                    db.session.commit()
 
                 newUser = Users(
                     authentication_id=auth.id,
@@ -397,32 +384,7 @@ def patchById(id):
 
     if user is not None:
         if currentUser["role"] == "SUPERADMIN" or currentUser["user_id"] == user.id:
-            if form["avatar"] != None:
-                if user.avatar_id:
-                    # DELETE EXISTING AVATAR
-                    avatar = Documents.query.get(user.avatar_id)
-                    user.avatar_id = None
-                    if avatar:
-                        db.session.commit()
-                        db.session.delete(avatar)
-                        db.session.commit()
-                    else:
-                        print("avatar not found")
-
-                # CREATE NEW AVATAR
-                newAvatar = Documents(
-                    date_create=datetime.datetime.utcnow(),
-                    type="IMAGE",
-                    title="Avatar " + user.firstname + " " + user.lastname,
-                    file_name="avatar_" + user.firstname + "_" + user.lastname,
-                    data=form["avatar"],
-                    user_id=user.id,
-                )
-                db.session.add(newAvatar)
-                db.session.commit()
-
-                user.avatar_id = newAvatar.id
-
+      
             if "firstname" in form:
                 user.firstname = form["firstname"]
             if "lastname" in form:
@@ -436,55 +398,6 @@ def patchById(id):
             return jsonify({"msg": "Forbidden"}), 403
     else:
         return jsonify({"msg": "Not Found"}), 404
-
-
-@users.route("/<int:id>/avatar", methods=["DELETE"])
-@jwt_required()
-def deleteAvatarById(id):
-    """
-    Delete the avatar of the user
-    ---
-    tags:
-      - users
-    security:
-      - Bearer: []
-    parameters:
-      - in: path
-        name: id
-        type: integer
-        required: true
-    responses:
-      200:
-        description: OK
-      403:
-        description: Forbidden
-      404:
-        description: Not Found
-      500:
-        description: Internal Server Error
-    """
-    infoLogger.info(f"{request.method} → {request.path}")
-
-    # Access the identity of the current user with get_jwt_identity
-    currentUser = get_jwt_identity()
-
-    if "role" in currentUser and currentUser["role"] == "SUPERADMIN":
-        user = Users.query.get(id)
-
-        if user:
-            avatar = Documents.query.get(user.avatar_id)
-            if avatar:
-                user.avatar_id = None
-                db.session.commit()
-                db.session.delete(avatar)
-                db.session.commit()
-                return jsonify({"msg": "OK"}), 200
-            else:
-                return jsonify({"msg": "Not Found : Document"}), 404
-        else:
-            return jsonify({"msg": "Not Found : User"}), 404
-    else:
-        return jsonify({"msg": "Forbidden"}), 403
 
 
 @users.route("/<int:id>", methods=["DELETE"])

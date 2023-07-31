@@ -11,7 +11,7 @@ header_mail_template = """
 <body style="font-family: Calibri; background-color:white;">
   <div style="margin:auto;width:100%;max-width:720px;padding:1em;">
     <div id="header">
-      <p>Boilerplate Exo-Dev</p>
+      <p>Projet Maquette de la Métropole de lyon </p>
     </div>
 """
 
@@ -20,7 +20,6 @@ footer_mail_template = """
       <br><br>
       A très vite &#128522;
       <br>
-      <strong>L’équipe Exo-Dev</strong>
     </div>
     <br/>
     <p style="font-style: italic; text-align: center;">
@@ -32,7 +31,7 @@ footer_mail_template = """
 """
 
 # ####################################################################################
-#                         CORPS WITH TEMPLATE EXO-DEV
+#                         CORPS WITH TEMPLATE 
 # ####################################################################################
 
 
@@ -79,7 +78,7 @@ corps_reset_password = """
 corps_new_user = """
 <div id="content">
   <!--  NEW USER ACCOUNT  -->
-    <h2 style="font-weight: normal;">Bienvenue sur votre compte <strong>Boilerplate</strong></h2>
+    <h2 style="font-weight: normal;">Bienvenue sur votre compte <strong>Projet Maquette de la Métropole de lyon</strong></h2>
     <br/>
     <p>
       &#128073; Pour vous définir votre mot de passe et accéder à votre espace, il vous suffit de suivre le processus de première connexion en cliquant sur le bouton ci-dessous :<br>

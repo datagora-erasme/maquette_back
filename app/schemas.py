@@ -1,31 +1,5 @@
 from app import ma
-from app.models import Users
-from app.models import (
-    Documents,
-    Notifications,
-    Avatars,
-    Customers,
-    Contacts,
-)
-
-
-class DocumentOnlySchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = Documents
-
-
-class DocumentSchema(ma.SQLAlchemyAutoSchema):
-    user = ma.Nested("UserSchema", only=("id",), many=False)
-
-    class Meta:
-        fields = ("id", "title", "type", "user")
-
-
-class NotificationSchema(ma.SQLAlchemyAutoSchema):
-    status = ma.Nested("NotificationUserSchema", exclude=("notification",), many=False)
-
-    class Meta:
-        model = Notifications
+from app.models import Users, Projects, Datas
 
 
 class AuthenticationSchema(ma.SQLAlchemyAutoSchema):
@@ -59,36 +33,11 @@ class UserAdminSchema(ma.SQLAlchemyAutoSchema):
         model = Users
 
 
-class NotificationUserSchema(ma.SQLAlchemyAutoSchema):
-    user = ma.Nested("UserSchema", only=("id",), many=False)
-    notification = ma.Nested("NotificationSchema", many=False)
-
+class ProjectsSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
-        fields = ("id", "is_viewed", "notification", "user")
+        model = Projects
 
 
-class AvatarDetailsSchema(ma.SQLAlchemyAutoSchema):
+class DatasSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
-        model = Avatars
-
-
-class AvatarShortedSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        fields = ("id", "type", "file_name")
-
-
-class CustomerSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = Customers
-
-
-class CustomerListSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        fields = ("id", "name")
-
-
-class ContactSchema(ma.SQLAlchemyAutoSchema):
-    customer = ma.Nested("CustomerSchema", only=("id", "name"))
-
-    class Meta:
-        model = Contacts
+        model = Datas

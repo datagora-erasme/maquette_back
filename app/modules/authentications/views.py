@@ -256,7 +256,7 @@ def checkTempToken():
 @jwt_required()
 def checkEmail(email):
     """
-    Check if email is already exists
+    Check if the email exists already 
     ---
     tags:
       - authentications
