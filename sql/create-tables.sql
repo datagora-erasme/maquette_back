@@ -41,7 +41,6 @@ CREATE TABLE base.users (
 	firstname character varying(100) NOT NULL,
 	lastname character varying(100) NOT NULL,
 	phone character varying(100) NULL,
-	avatar_id INT,
 	authentication_id INT,
 	FOREIGN KEY (authentication_id)
 		REFERENCES base.authentications (id) MATCH SIMPLE

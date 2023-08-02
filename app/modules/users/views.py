@@ -263,9 +263,6 @@ def create():
             phone:
               type: string
               description: phone number of the user
-            avatar:
-              type: string
-              description: base64 of the avatar of the user
     responses:
       200:
         description: OK
@@ -289,11 +286,6 @@ def create():
             form["phone"] = None
         elif "phone" in form and len(form["phone"]) == 0:
             form["phone"] = None
-
-        if "avatar" not in form or ("avatar" in form and form["avatar"] == None):
-            form["avatar"] = None
-        elif "avatar" in form and len(form["avatar"]) == 0:
-            form["avatar"] = None
 
         if "firstname" in form and "lastname" in form and "authentication_id" in form:
             auth = Authentications.query.get(form["authentication_id"])
@@ -347,9 +339,6 @@ def patchById(id):
             phone:
               type: string
               description: phone number of the user
-            avatar:
-              type: string
-              description: base64 of the avatar
     responses:
       200:
         description: OK
@@ -376,11 +365,6 @@ def patchById(id):
         form["phone"] = None
     elif "phone" in form and len(form["phone"]) == 0:
         form["phone"] = None
-
-    if "avatar" not in form or ("avatar" in form and form["avatar"] == None):
-        form["avatar"] = None
-    elif "avatar" in form and len(form["avatar"]) == 0:
-        form["avatar"] = None
 
     if user is not None:
         if currentUser["role"] == "SUPERADMIN" or currentUser["user_id"] == user.id:
