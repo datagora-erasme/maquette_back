@@ -180,7 +180,6 @@ def getUserDatas():
             "firstname": userDB.firstname,
             "lastname": userDB.lastname,
             "phone": userDB.phone,
-            "avatar": userDB.avatar,
         }
 
         return jsonify({"user": authUser}), 200

@@ -27,13 +27,13 @@ def getSwaggerUi():
 
     swag = swagger(app)
     swag["info"]["version"] = vers[7]
-    swag["info"]["title"] = "Swagger Boilerplate Exo-dev API"
+    swag["info"]["title"] = "Swagger Maquette Exo-dev API"
 
     env = environ.get("APPLICATION_ENV")
     if env == "production":
         swag["schemes"] = ["https", "http"]
     else:
-        swag["schemes"] = ["http", "https"]
+        swag["schemes"] = ["https", "http"]
 
     swag["securityDefinitions"] = {
         "Bearer": {"type": "apiKey", "name": "Authorization", "in": "header"}
