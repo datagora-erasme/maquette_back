@@ -37,10 +37,13 @@ def voxelize(tempfile):
     func: to use binvox for voxelization.
         @tempfile: the temp file created from the received Bbox.
     """
-    if platform == "linux" or platform == "linux2":
-        os.system("binvox -c -e -d 200 -t msh " + tempfile)
-    elif platform == "win32":
-        os.system("binvox.exe -c -e -d 200 -t msh " + tempfile)
+    if tempfile:
+      if platform == "linux" or platform == "linux2":
+          os.system("binvox -c -e -d 200 -t msh " + tempfile)
+      elif platform == "win32":
+          os.system("binvox.exe -c -e -d 200 -t msh " + tempfile)
+    else:
+        return jsonify({"msg": "File to voxelize isn't available"}), 400
 
 
 @dataprocess.before_request
