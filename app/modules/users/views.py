@@ -95,7 +95,6 @@ def listAll():
     try:
         if isName:
             name_composed = request.args["name"].split(" ")
-            print(request.args["name"])
             if len(name_composed) > 1:
                 query = query.filter(
                     or_(

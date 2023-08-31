@@ -6,6 +6,9 @@
 </p>
 
 # About This Project
+The augmented model project was born during an experiment as part of the MAM project: **Mediation and Augmented Modeling**. Various workshops were organized in collaboration with *LabEx IMU*, *ERASME Urban Lab* and the *École Urbaine de Lyon*.
+
+The project consists of a model of a city district made from **Lego** and created from a web platform. This model is made to be installed in public places and used in the context of mediation or neighborhood council.
 
 # About This Repository 
 > :warning: This version is using the tiles hosted on Exo-Dev's server :warning:
