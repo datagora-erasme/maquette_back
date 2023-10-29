@@ -39,9 +39,9 @@ def voxelize(tempfile):
     """
     if tempfile:
       if platform == "linux" or platform == "linux2":
-          os.system("binvox -c -e -d 200 -t msh " + tempfile)
+          os.system("./binvox -e -ri -cb -fit -t msh " + tempfile)
       elif platform == "win32":
-          os.system("binvox.exe -c -e -d 200 -t msh " + tempfile)
+          os.system("binvox.exe -e -dc -v -ri -t msh " + tempfile)
     else:
         return jsonify({"msg": "File to voxelize isn't available"}), 400
 
@@ -138,21 +138,18 @@ def bboxreceive():
                 p.add_mesh(m, color="lightblue", opacity=1)
         saved_scene = ''.join(random.choices(string.ascii_lowercase, k=10))
         p.export_obj(saved_scene+".obj")
+        # In case the Bbox contains no buildings
+        if not p.mesh:
+            return(jsonify({"msg": "Mesh is empty or contains no vectors", "isEmpty": "True"}), 400)
         # Voxelizing the tempfile that contains the mesh to voxelize
         voxelize(saved_scene+".obj")
         if debug_mode == 'False':
           os.remove(saved_scene+".obj")
           os.remove(saved_scene+".mtl")
-
+        m = pv.Plotter()
         themesh = pv.read(saved_scene+".msh")
 
-        p.add_mesh(themesh, color=True, show_edges=True, opacity=1)
-
-        # If we want to enable the anti aliasing
-        # p.enable_anti_aliasing("ssaa")
-
-        # If we want to preview the result
-        # p.show()
+        m.add_mesh(themesh, color=True, show_edges=True, opacity=1)
 
         # Using Pyvista to export the voxelized version of the mesh
         p.export_obj(saved_scene+"_voxeled.obj")
