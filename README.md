@@ -57,7 +57,7 @@ This code will :
 docker exec -it maquette_augmentee_postgres psql -U postgres -d postgres -f /sql/create-tables.sql
 docker exec -it maquette_augmentee_postgres psql -U postgres -d postgres -f /sql/insert-datas.sql
 ```
-```
+
 
 ## Run the app
 
