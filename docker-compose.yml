@@ -1,0 +1,34 @@
+version: "3.9"
+services:
+  backend:
+    build: . 
+    image: erasme/maquette_augmentee_backend:latest
+    container_name: maquette_augmentee_backend
+    depends_on:
+      - postgres
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    #volumes:
+  postgres:
+    image: postgres:13.3
+    container_name: maquette_augmentee_postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - ./sql:/sql
+      - ./postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      
+    
+
+  
