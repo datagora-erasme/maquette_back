@@ -36,7 +36,35 @@ class Authentications(db.Model):
             + '">'
         )
 
+class Documents(db.Model):
+    __table_args__ = {"schema": schema}
 
+    # fields
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    date_create = db.Column(db.Date)
+    type = db.Column(db.String)
+    title = db.Column(db.String)
+    file_name = db.Column(db.String)
+    data = db.Column(db.String)
+
+    # foreign keys
+    user_id = db.Column(db.Integer, db.ForeignKey(schema + ".users.id"))
+
+    # objects links
+    user = db.relationship("Users", foreign_keys=user_id)
+
+
+    def __str__(self):
+        return (
+            "<Documents id="
+            + str(self.id)
+            + ' title="'
+            + self.title
+            + '" type="'
+            + self.type
+            + '">'
+        )
+    
 class Users(db.Model):
     __table_args__ = {"schema": schema}
 
@@ -45,7 +73,6 @@ class Users(db.Model):
     firstname = db.Column(db.String)
     date_archived = db.Column(db.Date)
     lastname = db.Column(db.String)
-    phone = db.Column(db.String, nullable=True, default=None)
 
     # foreign keys
     authentication_id = db.Column(
@@ -57,7 +84,6 @@ class Users(db.Model):
     )
 
     def __str__(self):
-        phonePart = "NULL" if (self.phone == None) else str(self.phone)
 
         return (
             "<Users id="
@@ -66,8 +92,6 @@ class Users(db.Model):
             + self.firstname
             + '" lastname="'
             + str(self.lastname)
-            + '" phone='
-            + phonePart
             + ">"
         )
 
@@ -86,6 +110,13 @@ class Projects(db.Model):
 
     # foreign keys
     user_id = db.Column(db.Integer, db.ForeignKey(schema + ".users.id"))
+    model_id = db.Column(db.Integer, db.ForeignKey(schema + ".documents.id"))
+    csv_id = db.Column(db.Integer, db.ForeignKey(schema + ".documents.id"))
+
+    # Object links 
+    user = db.relationship("Users", foreign_keys=user_id)
+    model = db.relationship("Documents", foreign_keys=model_id, viewonly=True)
+    csv = db.relationship("Documents", foreign_keys=csv_id, viewonly=True)
 
     def __str__(self):
         return (
@@ -105,6 +136,10 @@ class Projects(db.Model):
             + str(self.ratio)
             + '" user_id="'
             + str(self.user_id)
+            + '" model_id="'
+            + str(self.model_id)
+            + '" csv_id="'
+            + str(self.csv_id)
             + '">'
         )
 

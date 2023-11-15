@@ -87,6 +87,7 @@ from .core.views import core as core_bp
 from .docs.views import docs as docs_bp
 from .modules.authentications.views import authentications as authentications_bp
 from .modules.users.views import users as users_bp
+from .modules.documents.views import documents as documents_bp
 
 from .modules.projects.views import projects as projects_bp
 from .modules.datas.views import datas as datas_bp
@@ -100,6 +101,7 @@ app.register_blueprint(core_bp, url_prefix="/api/core")
 app.register_blueprint(docs_bp, url_prefix="/api/docs")
 app.register_blueprint(authentications_bp, url_prefix="/api/auth")
 app.register_blueprint(users_bp, url_prefix="/api/users")
+app.register_blueprint(documents_bp, url_prefix="/api/documents")
 
 
 app.register_blueprint(projects_bp, url_prefix="/api/projects")

@@ -21,9 +21,8 @@ user_select_schema = UserListSchema(many=True)
 # Utils import
 
 
-# Create Blueprint & get logger
+# Create Blueprint
 users = Blueprint("users", __name__)
-logger = LocalProxy(lambda: current_app.logger)
 
 
 @users.before_request
@@ -259,9 +258,6 @@ def create():
             lastname:
               type: string
               description: lastname of the user
-            phone:
-              type: string
-              description: phone number of the user
     responses:
       200:
         description: OK
@@ -281,11 +277,6 @@ def create():
     form = request.json
 
     if currentUser["role"] == "SUPERADMIN":
-        if "phone" not in form or ("phone" in form and form["phone"] == None):
-            form["phone"] = None
-        elif "phone" in form and len(form["phone"]) == 0:
-            form["phone"] = None
-
         if "firstname" in form and "lastname" in form and "authentication_id" in form:
             auth = Authentications.query.get(form["authentication_id"])
 
@@ -295,7 +286,6 @@ def create():
                     authentication_id=auth.id,
                     firstname=form["firstname"],
                     lastname=form["lastname"],
-                    phone=form["phone"],
                 )
 
                 db.session.add(newUser)
@@ -335,9 +325,6 @@ def patchById(id):
             lastname:
               type: string
               description: lastname of the user
-            phone:
-              type: string
-              description: phone number of the user
     responses:
       200:
         description: OK
@@ -360,11 +347,6 @@ def patchById(id):
     user = Users.query.get(id)
 
     # nullable inputs
-    if "phone" not in form or ("phone" in form and form["phone"] == None):
-        form["phone"] = None
-    elif "phone" in form and len(form["phone"]) == 0:
-        form["phone"] = None
-
     if user is not None:
         if currentUser["role"] == "SUPERADMIN" or currentUser["user_id"] == user.id:
       
@@ -372,8 +354,6 @@ def patchById(id):
                 user.firstname = form["firstname"]
             if "lastname" in form:
                 user.lastname = form["lastname"]
-            if form["phone"] != None:
-                user.phone = form["phone"]
 
             db.session.commit()
             return jsonify({"msg": "OK"}), 200

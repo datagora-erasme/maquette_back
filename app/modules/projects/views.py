@@ -15,9 +15,9 @@ from werkzeug.local import LocalProxy
 project_schema = ProjectsSchema()
 projects_schema = ProjectsSchema(many=True)
 
-# Create Blueprint & get logger
+# Create Blueprint
 projects = Blueprint("projects", __name__)
-logger = LocalProxy(lambda: current_app.logger)
+
 
 
 @projects.before_request
@@ -113,6 +113,8 @@ def create():
             - nb_plaques_h
             - nb_plaques_v
             - ratio
+            - model_id
+            - csv_id
           properties:
             name:
               type: string
@@ -127,6 +129,12 @@ def create():
               type: integer
               description: the number of vertical plates
             ratio:
+              type: integer
+              description: ratio
+            model_id:
+              type: integer
+              description: ratio
+            csv_id:
               type: integer
               description: ratio
     responses:
@@ -147,8 +155,7 @@ def create():
     if currentUser:
         # Get Body of request
         form = request.json
-
-        if 'name' in form and 'bbox' in form and 'nb_plaques_h' in form and 'nb_plaques_v' in form and 'ratio' in form:
+        if 'model_id' in form and 'csv_id' in form and 'name' in form and 'bbox' in form and 'nb_plaques_h' in form and 'nb_plaques_v' in form and 'ratio' in form:
             newproject = Projects(
                 date_create=datetime.datetime.utcnow(),
                 user_id=currentUser['user_id'],
@@ -156,7 +163,9 @@ def create():
                 bbox=form['bbox'],
                 nb_plaques_h=form['nb_plaques_h'],
                 nb_plaques_v=form['nb_plaques_v'],
-                ratio=form['ratio']
+                ratio=form['ratio'],
+                model_id=form['model_id'],
+                csv_id=form['csv_id']
             )
             db.session.add(newproject)
             db.session.commit()
@@ -208,6 +217,12 @@ def updateById(id):
             ratio:
               type: integer
               description: ratio
+            model_id:
+              type: integer
+              description: ratio
+            csv_id:
+              type: integer
+              description: ratio
     responses:
       200:
         description: OK
@@ -233,6 +248,10 @@ def updateById(id):
             project.nb_plaques_v = form['nb_plaques_v']
         if 'ratio' in form:
             project.ratio = form['ratio']
+        if 'model_id' in form:
+            project.model_id = form['model_id']
+        if 'csv_id' in form:
+            project.csv_id = form['csv_id']
         db.session.commit()
         return jsonify({'msg': 'OK'}), 200
     else:
