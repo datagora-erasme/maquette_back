@@ -5,21 +5,20 @@ services:
     image: erasme/maquette_augmentee_backend:latest
     container_name: maquette_augmentee_backend
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     ports:
       - "5000:5000"
     env_file:
       - .env
-    #volumes:
   postgres:
     image: postgres:13.3
     container_name: maquette_augmentee_postgres
-    ports:
-      - "5432:5432"
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
+      - POSTGRES_USER=${BDD_CONFIG_USER}
+      - POSTGRES_PASSWORD=${BDD_CONFIG_PASSWD}
+      - POSTGRES_DB=${BDD_CONFIG_DB}
+      - POSTGRES_SCHEMA=${BDD_CONFIG_SCHEMA}
     volumes:
       - ./sql:/sql
       - ./postgres-data:/var/lib/postgresql/data
@@ -28,6 +27,16 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+  pgadmin:
+    image: dpage/pgadmin4:5.7
+    container_name: maquette_augmentee_pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.lan
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
       
     
 
