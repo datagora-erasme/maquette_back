@@ -23,9 +23,8 @@ auths_schema = AuthenticationSchema(many=True)
 
 # Content mails import
 
-# Create Blueprint & get logger
+# Create Blueprint
 authentications = Blueprint("authentications", __name__)
-logger = LocalProxy(lambda: current_app.logger)
 
 
 @authentications.before_request
@@ -124,7 +123,7 @@ def loginAuth():
                     identity=userIdentity, expires_delta=expires
                 )
 
-                response = jsonify({"token": access_token})
+                response = jsonify({"token": access_token, "firstname": user.firstname, "lastname": user.lastname})
                 response.status_code = 200
                 # add token to response headers - so SwaggerUI can use it
                 response.headers.extend({"jwt-token": access_token})
@@ -179,7 +178,6 @@ def getUserDatas():
             "id_user": userDB.id,
             "firstname": userDB.firstname,
             "lastname": userDB.lastname,
-            "phone": userDB.phone,
         }
 
         return jsonify({"user": authUser}), 200
@@ -420,7 +418,7 @@ def create():
             server = ServerSMTP()
             sender = str(os.getenv("SMTP_SENDER"))
             to = [str(newAuth.email)]
-            subject = "[Exo-Dev] Bienvenue dans le boilerplate !"
+            subject = "Bienvenue dans le projet Maquette!"
             codage = "UTF-8"
             typetext = "html"
 
@@ -529,7 +527,7 @@ def resetPassword():
             server = ServerSMTP()
             sender = str(os.getenv("SMTP_SENDER"))
             to = [str(authDB.email)]
-            subject = "[Exo-Dev] Processus de réinitialisation de mot de passe"
+            subject = "Processus de réinitialisation de mot de passe"
             codage = "UTF-8"
             typetext = "html"
 
@@ -767,7 +765,7 @@ def resendMailsValidAccount(id):
             server = ServerSMTP()
             sender = str(os.getenv("SMTP_SENDER"))
             to = [str(authentication.email)]
-            subject = "[Exo-Dev] Invitation à activer son compte"
+            subject = "Invitation à activer son compte"
             codage = "UTF-8"
             typetext = "html"
 

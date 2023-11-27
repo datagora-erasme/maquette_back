@@ -27,9 +27,8 @@ import trimesh
 debug_mode = environ.get("DEBUG_MODE")
 
 
-# Create Blueprint & get logger
+# Create Blueprint
 dataprocess = Blueprint("dataprocess", __name__)
-logger = LocalProxy(lambda: current_app.logger)
 
 
 def voxelize(tempfile):

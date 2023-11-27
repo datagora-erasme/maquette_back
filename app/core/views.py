@@ -9,7 +9,7 @@ import pdfkit
 from app.utils.methods import *
 from app.utils.generatePdf import *
 
-# Create Blueprint & get logger
+# Create Blueprint
 core = Blueprint("core", __name__)
 
 

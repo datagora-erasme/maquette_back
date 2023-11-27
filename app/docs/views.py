@@ -7,7 +7,7 @@ from flask_swagger import swagger
 from app.utils.constants import *
 from app.utils.methods import *
 
-# Create Blueprint & get logger
+# Create Blueprint
 docs = Blueprint("docs", __name__)
 
 

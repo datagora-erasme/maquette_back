@@ -17,9 +17,8 @@ debug_mode = environ.get("DEBUG_MODE")
 data_schema = DatasSchema()
 datas_schema = DatasSchema(many=True)
 
-# Create Blueprint & get logger
+# Create Blueprint
 datas = Blueprint("datas", __name__)
-logger = LocalProxy(lambda: current_app.logger)
 
 
 

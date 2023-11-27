@@ -40,7 +40,6 @@ CREATE TABLE base.users (
 	date_archived TIMESTAMP WITHOUT TIME ZONE NULL DEFAULT NULL,
 	firstname character varying(100) NOT NULL,
 	lastname character varying(100) NOT NULL,
-	phone character varying(100) NULL,
 	authentication_id INT,
 	FOREIGN KEY (authentication_id)
 		REFERENCES base.authentications (id) MATCH SIMPLE
@@ -49,6 +48,20 @@ CREATE TABLE base.users (
 );
 ALTER TABLE base.users OWNER TO adm;
 
+CREATE TABLE base.documents (
+	id serial PRIMARY KEY,
+	date_create timestamp without time zone NOT NULL DEFAULT now(),
+	type character varying(255) NOT NULL,
+	title character varying(255) NOT NULL,
+	file_name character varying(255) NOT NULL,
+	data text NOT NULL,
+	user_id INT NOT NULL,
+	FOREIGN KEY (user_id)
+		REFERENCES base.users (id) MATCH SIMPLE
+		ON UPDATE NO ACTION
+		ON DELETE NO ACTION
+);
+ALTER TABLE base.documents OWNER TO adm;
 
 CREATE TABLE base.projects (
 	id serial PRIMARY KEY,
@@ -61,6 +74,16 @@ CREATE TABLE base.projects (
 	user_id INTEGER NULL,
 	FOREIGN KEY (user_id)
 		REFERENCES base.users (id) MATCH SIMPLE
+		ON UPDATE NO ACTION
+		ON DELETE NO ACTION,
+	model_id INTEGER NULL,
+	FOREIGN KEY (model_id)
+		REFERENCES base.documents (id) MATCH SIMPLE
+		ON UPDATE NO ACTION
+		ON DELETE NO ACTION,
+	csv_id INTEGER NULL,
+	FOREIGN KEY (csv_id)
+		REFERENCES base.documents (id) MATCH SIMPLE
 		ON UPDATE NO ACTION
 		ON DELETE NO ACTION
 );

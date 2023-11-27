@@ -1,6 +1,17 @@
 from app import ma
-from app.models import Users, Projects, Datas
+from app.models import Users, Projects, Datas, Documents
 
+
+class DocumentOnlySchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Documents
+
+
+class DocumentSchema(ma.SQLAlchemyAutoSchema):
+    user = ma.Nested("UserSchema", only=("id",), many=False)
+
+    class Meta:
+        fields = ("id", "title", "type", "user")
 
 class AuthenticationSchema(ma.SQLAlchemyAutoSchema):
     user = ma.Nested(
@@ -34,6 +45,9 @@ class UserAdminSchema(ma.SQLAlchemyAutoSchema):
 
 
 class ProjectsSchema(ma.SQLAlchemyAutoSchema):
+    user = ma.Nested("UserSchema", only=("id",), many=False)
+    model = ma.Nested("DocumentOnlySchema", only=("id",), many=False)
+    csv = ma.Nested("DocumentOnlySchema", only=("id",), many=False)
     class Meta:
         model = Projects
 
