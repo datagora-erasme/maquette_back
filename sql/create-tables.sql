@@ -1,7 +1,7 @@
 
 DROP SCHEMA IF EXISTS base CASCADE;
 
-CREATE SCHEMA base AUTHORIZATION adm;
+CREATE SCHEMA base;
 
 
 -- ##################################################################
@@ -10,14 +10,11 @@ CREATE SCHEMA base AUTHORIZATION adm;
 
 
 CREATE TYPE base.roles_auth AS ENUM ('SUPERADMIN', 'ADMIN', 'USER');
-ALTER TYPE base.roles_auth OWNER TO adm;
 
 
 CREATE TYPE base.status_auth AS ENUM ('INACTIVE', 'ACTIVE', 'BANNED', 'PENDING');
-ALTER TYPE base.status_auth OWNER TO adm;
 
 CREATE TYPE base.img_type AS ENUM ('png', 'gif', 'jpg', 'jpeg');
-ALTER TYPE base.img_type OWNER TO adm;
 
 -- ##################################################################
 -- #													TABLES																#
@@ -32,7 +29,6 @@ CREATE TABLE base.authentications (
 	role base.roles_auth NOT NULL DEFAULT 'USER'::base.roles_auth,
 	status base.status_auth NOT NULL DEFAULT 'ACTIVE'::base.status_auth
 );
-ALTER TABLE base.authentications OWNER TO adm;
 
 CREATE TABLE base.users (
 	id serial PRIMARY KEY,
@@ -46,7 +42,6 @@ CREATE TABLE base.users (
 		ON UPDATE NO ACTION
 		ON DELETE NO ACTION
 );
-ALTER TABLE base.users OWNER TO adm;
 
 CREATE TABLE base.documents (
 	id serial PRIMARY KEY,
@@ -61,7 +56,6 @@ CREATE TABLE base.documents (
 		ON UPDATE NO ACTION
 		ON DELETE NO ACTION
 );
-ALTER TABLE base.documents OWNER TO adm;
 
 CREATE TABLE base.projects (
 	id serial PRIMARY KEY,
@@ -87,7 +81,6 @@ CREATE TABLE base.projects (
 		ON UPDATE NO ACTION
 		ON DELETE NO ACTION
 );
-ALTER TABLE base.projects OWNER TO adm;
 
 CREATE TABLE base.datas (
 	id serial PRIMARY KEY,
@@ -105,4 +98,3 @@ CREATE TABLE base.datas (
 		ON UPDATE NO ACTION
 		ON DELETE NO ACTION
 );
-ALTER TABLE base.datas OWNER TO adm;

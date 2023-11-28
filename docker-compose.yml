@@ -18,9 +18,7 @@ services:
       - POSTGRES_USER=${BDD_CONFIG_USER}
       - POSTGRES_PASSWORD=${BDD_CONFIG_PASSWD}
       - POSTGRES_DB=${BDD_CONFIG_DB}
-      - POSTGRES_SCHEMA=${BDD_CONFIG_SCHEMA}
     volumes:
-      - ./sql:/sql
       - ./postgres-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres"]
