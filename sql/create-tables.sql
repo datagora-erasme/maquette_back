@@ -67,7 +67,7 @@ CREATE TABLE base.projects (
 	id serial PRIMARY KEY,
 	date_create timestamp without time zone NOT NULL DEFAULT now(),
 	name character varying(100) NOT NULL,
-	bbox character varying(100) NOT NULL,
+	bbox character varying(1000) NOT NULL,
 	nb_plaques_h INT NOT NULL ,
 	nb_plaques_v INT NOT NULL ,
 	ratio INT NOT NULL,
