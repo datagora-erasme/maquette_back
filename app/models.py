@@ -112,11 +112,13 @@ class Projects(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey(schema + ".users.id"))
     model_id = db.Column(db.Integer, db.ForeignKey(schema + ".documents.id"))
     csv_id = db.Column(db.Integer, db.ForeignKey(schema + ".documents.id"))
+    emprise_id = db.Column(db.Integer, db.ForeignKey(schema + ".documents.id"))
 
     # Object links 
     user = db.relationship("Users", foreign_keys=user_id)
     model = db.relationship("Documents", foreign_keys=model_id, viewonly=True)
     csv = db.relationship("Documents", foreign_keys=csv_id, viewonly=True)
+    emprise = db.relationship("Documents", foreign_keys=emprise_id, viewonly=True)
 
     def __str__(self):
         return (
@@ -140,6 +142,8 @@ class Projects(db.Model):
             + str(self.model_id)
             + '" csv_id="'
             + str(self.csv_id)
+            + '" emprise_id="'
+            + str(self.emprise_id)
             + '">'
         )
 

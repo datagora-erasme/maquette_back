@@ -133,10 +133,13 @@ def create():
               description: ratio
             model_id:
               type: integer
-              description: ratio
+              description: model document
             csv_id:
               type: integer
-              description: ratio
+              description: csv document
+            emprise_id:
+              type: integer
+              description: emprise document
     responses:
       200:
         description: OK
@@ -165,7 +168,8 @@ def create():
                 nb_plaques_v=form['nb_plaques_v'],
                 ratio=form['ratio'],
                 model_id=form['model_id'],
-                csv_id=form['csv_id']
+                csv_id=form['csv_id'],
+                emprise_id=form['emprise_id']
             )
             db.session.add(newproject)
             db.session.commit()
