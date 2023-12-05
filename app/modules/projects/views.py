@@ -167,9 +167,9 @@ def create():
                 nb_plaques_h=form['nb_plaques_h'],
                 nb_plaques_v=form['nb_plaques_v'],
                 ratio=form['ratio'],
-                model_id=form['model_id'],
-                csv_id=form['csv_id'],
-                emprise_id=form['emprise_id']
+                model_id=form['model_id'] if 'model_id' in form else None,
+                csv_id=form['csv_id'] if 'csv_id' in form else None,
+                emprise_id=form['emprise_id'] if 'emprise_id' in form else None
             )
             db.session.add(newproject)
             db.session.commit()
