@@ -85,6 +85,11 @@ CREATE TABLE base.projects (
 	FOREIGN KEY (csv_id)
 		REFERENCES base.documents (id) MATCH SIMPLE
 		ON UPDATE NO ACTION
+		ON DELETE NO ACTION,
+	emprise_id INTEGER NULL,
+	FOREIGN KEY (emprise_id)
+		REFERENCES base.documents (id) MATCH SIMPLE
+		ON UPDATE NO ACTION
 		ON DELETE NO ACTION
 );
 ALTER TABLE base.projects OWNER TO adm;
