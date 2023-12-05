@@ -158,7 +158,7 @@ def create():
     if currentUser:
         # Get Body of request
         form = request.json
-        if 'model_id' in form and 'csv_id' in form and 'name' in form and 'bbox' in form and 'nb_plaques_h' in form and 'nb_plaques_v' in form and 'ratio' in form:
+        if 'name' in form and 'bbox' in form and 'nb_plaques_h' in form and 'nb_plaques_v' in form and 'ratio' in form:
             newproject = Projects(
                 date_create=datetime.datetime.utcnow(),
                 user_id=currentUser['user_id'],
