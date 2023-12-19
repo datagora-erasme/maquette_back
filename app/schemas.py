@@ -48,6 +48,7 @@ class ProjectsSchema(ma.SQLAlchemyAutoSchema):
     user = ma.Nested("UserSchema", only=("id",), many=False)
     model = ma.Nested("DocumentOnlySchema", only=("id",), many=False)
     csv = ma.Nested("DocumentOnlySchema", only=("id",), many=False)
+    emprise = ma.Nested("DocumentOnlySchema", only=("id",), many=False)
     class Meta:
         model = Projects
 

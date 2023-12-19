@@ -133,10 +133,13 @@ def create():
               description: ratio
             model_id:
               type: integer
-              description: ratio
+              description: model document
             csv_id:
               type: integer
-              description: ratio
+              description: csv document
+            emprise_id:
+              type: integer
+              description: emprise document
     responses:
       200:
         description: OK
@@ -155,7 +158,7 @@ def create():
     if currentUser:
         # Get Body of request
         form = request.json
-        if 'model_id' in form and 'csv_id' in form and 'name' in form and 'bbox' in form and 'nb_plaques_h' in form and 'nb_plaques_v' in form and 'ratio' in form:
+        if 'name' in form and 'bbox' in form and 'nb_plaques_h' in form and 'nb_plaques_v' in form and 'ratio' in form:
             newproject = Projects(
                 date_create=datetime.datetime.utcnow(),
                 user_id=currentUser['user_id'],
@@ -164,8 +167,9 @@ def create():
                 nb_plaques_h=form['nb_plaques_h'],
                 nb_plaques_v=form['nb_plaques_v'],
                 ratio=form['ratio'],
-                model_id=form['model_id'],
-                csv_id=form['csv_id']
+                model_id=form['model_id'] if 'model_id' in form else None,
+                csv_id=form['csv_id'] if 'csv_id' in form else None,
+                emprise_id=form['emprise_id'] if 'emprise_id' in form else None
             )
             db.session.add(newproject)
             db.session.commit()

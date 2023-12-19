@@ -61,7 +61,7 @@ CREATE TABLE base.projects (
 	id serial PRIMARY KEY,
 	date_create timestamp without time zone NOT NULL DEFAULT now(),
 	name character varying(100) NOT NULL,
-	bbox character varying(100) NOT NULL,
+	bbox character varying(1000) NOT NULL,
 	nb_plaques_h INT NOT NULL ,
 	nb_plaques_v INT NOT NULL ,
 	ratio INT NOT NULL,
@@ -77,6 +77,11 @@ CREATE TABLE base.projects (
 		ON DELETE NO ACTION,
 	csv_id INTEGER NULL,
 	FOREIGN KEY (csv_id)
+		REFERENCES base.documents (id) MATCH SIMPLE
+		ON UPDATE NO ACTION
+		ON DELETE NO ACTION,
+	emprise_id INTEGER NULL,
+	FOREIGN KEY (emprise_id)
 		REFERENCES base.documents (id) MATCH SIMPLE
 		ON UPDATE NO ACTION
 		ON DELETE NO ACTION
