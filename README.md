@@ -53,6 +53,12 @@ This code will :
 * Setup a PostgreSQL Server depending on the OS you're using.
 * Execute the sql scripts available at the */**sql*** folder ( *create-tables.sql* & *insert-tables.sql* )
 
+```bash
+docker exec -it maquette_augmentee_postgres psql -U postgres -d postgres -f /sql/create-tables.sql
+docker exec -it maquette_augmentee_postgres psql -U postgres -d postgres -f /sql/insert-datas.sql
+```
+
+
 ## Run the app
 
 * Clone the repository 

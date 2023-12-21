@@ -6,4 +6,5 @@ RUN apt install ffmpeg libglu1-mesa libsm6 libxext6 libxmu6 -y && rm -rf /var/li
 COPY . /var/www/back/
 WORKDIR /var/www/back/
 RUN pip3 install --no-cache-dir -r requirements.txt
+RUN chmod +x binvox
 ENTRYPOINT ["python", "run.py", "-e", "contact@exo-dev.fr", "-p", "Dev"]

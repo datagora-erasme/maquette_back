@@ -1,0 +1,41 @@
+version: "3.9"
+services:
+  backend:
+    build: . 
+    image: erasme/maquette_augmentee_backend:latest
+    container_name: maquette_augmentee_backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+  postgres:
+    image: postgres:13.3
+    container_name: maquette_augmentee_postgres
+    environment:
+      - POSTGRES_USER=${BDD_CONFIG_USER}
+      - POSTGRES_PASSWORD=${BDD_CONFIG_PASSWD}
+      - POSTGRES_DB=${BDD_CONFIG_DB}
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  pgadmin:
+    image: dpage/pgadmin4:5.7
+    container_name: maquette_augmentee_pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.lan
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+      
+    
+
+  
