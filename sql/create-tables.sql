@@ -62,6 +62,7 @@ CREATE TABLE base.projects (
 	date_create timestamp without time zone NOT NULL DEFAULT now(),
 	name character varying(100) NOT NULL,
 	bbox character varying(1000) NOT NULL,
+	pos character varying(1000) NULL,
 	nb_plaques_h INT NOT NULL ,
 	nb_plaques_v INT NOT NULL ,
 	ratio INT NOT NULL,

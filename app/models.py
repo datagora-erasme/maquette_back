@@ -95,7 +95,6 @@ class Users(db.Model):
             + ">"
         )
 
-
 class Projects(db.Model):
     __table_args__ = {"schema": schema}
 
@@ -104,6 +103,7 @@ class Projects(db.Model):
     date_create = db.Column(db.Date)
     name = db.Column(db.String)
     bbox = db.Column(db.String)
+    pos = db.Column(db.String)
     nb_plaques_h = db.Column(db.Integer)
     nb_plaques_v = db.Column(db.Integer)
     ratio = db.Column(db.Integer)
@@ -130,6 +130,8 @@ class Projects(db.Model):
             + str(self.name)
             + '" bbox="'
             + str(self.bbox)
+            + '" pos="'
+            + str(self.pos)
             + '" nb_plaques_h="'
             + str(self.nb_plaques_h)
             + '" nb_plaques_v="'
@@ -146,7 +148,6 @@ class Projects(db.Model):
             + str(self.emprise_id)
             + '">'
         )
-
 
 class Datas(db.Model):
     __table_args__ = {"schema": schema}

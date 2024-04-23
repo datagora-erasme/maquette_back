@@ -134,7 +134,7 @@ class ConfigDb(BaseConfig):
                 sql_execute(conn,"INSERT INTO base.users (firstname, lastname, authentication_id) VALUES ('Démo', 'Métropole', '" + str(uid) + "');", False)
                 conn.close()
             else:
-                if not dbchecker(conn,"select exists(select email from base.authentications where email='" + args.email + "')"):
+                if args and args.email and args.password and not dbchecker(conn,"select exists(select email from base.authentications where email='" + args.email + "')"):
                     cmd = "INSERT INTO base.authentications (email, password, role, status) VALUES ('%s', '%s', 'SUPERADMIN', 'ACTIVE');" % (args.email, hashStringWithSaltB64(args.password))
                     sql_execute(conn,cmd, False)
                     uid = dbchecker(conn,"SELECT id FROM base.authentications WHERE email = '" + args.email + "'")

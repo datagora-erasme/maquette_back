@@ -212,6 +212,9 @@ def updateById(id):
             bbox:
               type: string
               description: the BBox of that selected zone
+            pos:
+              type: string
+              description: the Pos of that selected zone in Slideshow
             nb_plaques_h:
               type: integer
               description: the number of horizontal plates
@@ -246,6 +249,8 @@ def updateById(id):
             project.name = form['name']
         if 'bbox' in form:
             project.bbox = form['bbox']
+        if 'pos' in form:
+            project.pos = form['pos']
         if 'nb_plaques_h' in form:
             project.nb_plaques_h = form['nb_plaques_h']
         if 'nb_plaques_v' in form:
