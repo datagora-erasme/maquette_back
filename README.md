@@ -96,3 +96,5 @@ In this example we will use a part of Lyon 3 (around *tour Part-Dieu*) and the B
 ## Voxelization
 
 ![Voxelization](https://i.imgur.com/WvmBza7.png)
+
+<!-- Security scan triggered at 2025-09-02 00:09:59 -->
