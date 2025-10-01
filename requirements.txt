@@ -51,6 +51,7 @@ pytest-order==1.1.0
 pytest-cov==4.0.0
 xlsxwriter==3.1.0
 pyhtml2pdf==0.0.6
+vtk==9.2.6
 pyvista==0.39.1
 numpy==1.24.2
 pymeshfix==0.16.2
