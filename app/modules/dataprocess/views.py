@@ -18,13 +18,21 @@ from app.utils.constants import *
 # WFS imports
 
 import geopandas as gpd
+import pandas as pd
+import shapely
 from requests import Request
-from owslib.wfs import WebFeatureService
 from shapely.geometry import box
 import pyvista as pv
 import trimesh
 
 debug_mode = environ.get("DEBUG_MODE")
+
+# Buildings layer (BD TOPO, IGN Géoplateforme), same source as the front
+WFS_URL = "https://data.geopf.fr/wfs"
+WFS_LAYER = "BDTOPO_V3:batiment"
+WFS_CRS = "EPSG:2154"
+# Max features returned per request by the Géoplateforme
+WFS_PAGE_SIZE = 5000
 
 
 # Create Blueprint
@@ -43,6 +51,34 @@ def voxelize(tempfile):
           os.system("binvox.exe -e -dc -v -ri -t msh " + tempfile)
     else:
         return jsonify({"msg": "File to voxelize isn't available"}), 400
+
+
+def fetch_buildings(bbox):
+    """
+    func: to fetch the buildings intersecting the bbox from the Géoplateforme WFS.
+        @bbox: "minx,miny,maxx,maxy" in EPSG:2154.
+    """
+    pages = []
+    start_index = 0
+    while True:
+        params = dict(
+            service="WFS",
+            version="2.0.0",
+            request="GetFeature",
+            typeNames=WFS_LAYER,
+            outputFormat="application/json",
+            srsName=WFS_CRS,
+            bbox=bbox + "," + WFS_CRS,
+            count=WFS_PAGE_SIZE,
+            startIndex=start_index,
+        )
+        wfs_request_url = Request("GET", WFS_URL, params=params).prepare().url
+        page = gpd.read_file(wfs_request_url)
+        pages.append(page)
+        if len(page) < WFS_PAGE_SIZE:
+            break
+        start_index += WFS_PAGE_SIZE
+    return pd.concat(pages, ignore_index=True)
 
 
 @dataprocess.before_request
@@ -86,53 +122,35 @@ def bboxreceive():
 
     form = request.json
     p = pv.Plotter()
-    url = "https://geoserver-planta.exo-dev.fr/geoserver/Metropole/ows?"
-
-    wfs = WebFeatureService(url=url)
-
-    layer_name = "Metropole:bati"
 
     if form["bbox"]:
-        params = dict(
-            service="WFS",
-            version="1.0.0",
-            request="GetFeature",
-            typeName=layer_name,
-            outputFormat="json",
-            srsName="EPSG:2154",
-            bbox=form["bbox"],
-            startIndex=0,
-        )
-
-        wfs_request_url = Request("GET", url, params=params).prepare().url
-
-        data = gpd.read_file(wfs_request_url)
+        data = fetch_buildings(form["bbox"])
 
         splited = form["bbox"].split(",")
 
         mask = box(splited[0], splited[1], splited[2], splited[3])
         gdfclip = data.clip(mask, keep_geom_type=True)
         info = []
-        for index, row in gdfclip.iterrows():
-            if row["geometry"].geom_type == "Polygon":
+        for _, row in gdfclip.iterrows():
+            # BD TOPO geometries are 3D (Z = ground altitude): the extrusion only needs the footprint
+            geometry = shapely.force_2d(row["geometry"])
+            if geometry.geom_type == "Polygon":
+                polygons = [geometry]
+            elif geometry.geom_type == "MultiPolygon":
+                polygons = geometry.geoms
+            else:
+                continue
+            for j in polygons:
                 zt = {
-                    "strid": row["strid"],
-                    "geometry": row["geometry"],
+                    "cleabs": row["cleabs"],
+                    "geometry": j,
                     "hauteur": row["hauteur"],
                 }
                 info.append(zt)
-            elif row["geometry"].geom_type == "MultiPolygon":
-                for j in row["geometry"].geoms:
-                    selected = gdfclip[gdfclip["strid"] == row["strid"]]
-                    zt = {
-                        "strid": row["strid"],
-                        "geometry": j,
-                        "hauteur": selected.hauteur[index],
-                    }
-                    info.append(zt)
 
         for i in info:
-            if i["hauteur"]:
+            # Some buildings have no known height (NaN)
+            if pd.notna(i["hauteur"]) and i["hauteur"] > 0:
                 m = trimesh.creation.extrude_polygon(i["geometry"], height=i["hauteur"])
                 p.add_mesh(m, color="lightblue", opacity=1)
         saved_scene = ''.join(random.choices(string.ascii_lowercase, k=10))
