@@ -8,7 +8,7 @@ services:
       postgres:
         condition: service_healthy
     ports:
-      - "5000:5000"
+      - "5009:5009"
     env_file:
       - .env
   postgres:

@@ -54,19 +54,21 @@ This code will :
 * Execute the sql scripts available at the */**sql*** folder ( *create-tables.sql* & *insert-tables.sql* )
 
 ```bash
-docker exec -it maquette_augmentee_postgres psql -U postgres -d postgres -f /sql/create-tables.sql
-docker exec -it maquette_augmentee_postgres psql -U postgres -d postgres -f /sql/insert-datas.sql
+docker exec -i maquette_augmentee_postgres psql -U postgres -d postgres < sql/create-tables.sql
+docker exec -i maquette_augmentee_postgres psql -U postgres -d postgres < sql/insert-datas.sql
 ```
 
 
 ## Run the app
 
 * Clone the repository 
-`
+```
 git clone https://github.com/datagora-erasme/maquette_back.git
-`
+```
 
 * Change variables on the .env file (taking the *.env.EXAMPLE* as an example)
+
+* Configure your pipenv shell
 
 * Install Python PIP requirements :
 
@@ -75,9 +77,15 @@ pip install -r requirements.txt
 ```
 
 * Start the API 
-`
+```
 python run.py
-`
+```
+
+* You can also execute the whole stack with docker
+```
+docker compose up
+```
+
 # Use-case Specification 
 
 ## Voxelization :
